@@ -1,0 +1,22 @@
+{
+  "name": "metalsmith-test",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "alasql": "^0.1.10",
+    "lodash": "^3.9.3",
+    "markdown-table": "^0.4.0",
+    "metalsmith": "^1.7.0",
+    "metalsmith-combine": "0.0.3",
+    "metalsmith-each": "^0.1.1",
+    "metalsmith-markdown": "^0.2.1",
+    "metalsmith-paths": "^2.0.0",
+    "replace": "^0.3.0"
+  }
+}
