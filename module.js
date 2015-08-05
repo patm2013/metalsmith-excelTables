@@ -23,45 +23,38 @@ function makeQry(tbl, select, additional){
 }
 
 exports.excelTables = function(config) {
+  config = _.defaults(config||{},{folder:"xlsx/"});
+
   return function(files, metalsmith, done) {
     var filenames = Object.keys(files);
     var alldone = (function (){
         var count = 0;
-
-        return function alldone(response) {
+        return function alldone() {
+          console.log(count);
           if (++count >= filenames.length) {
             done();
           }
         };
     })();
 
-    for (var file in files) {
-      var tbl = files[file].table,
-        select = files[file].select,
-        additional = files[file].additional,
-        contents = files[file].contents;
-        console.log(contents.toString());
-      if (tbl !== undefined) {
-          alasql(makeQry(tbl, select, additional),
-          [],function(data){
-            var strTbl = makeArray(data);
-            var strTmp = contents.toString();
-            console.log(strTmp);
-            strTmp += "\n\n" + strTbl;
-            console.log(strTmp);
-            console.log(contents);
-            contents = new Buffer(strTmp);
-            alldone();
-          });
-          console.log("A");
-      } else {
+    var ala = function(file){
+      var qry = makeQry(file.table, file.select, file.additional);
+      alasql(qry,[],function(data){
+        var strTbl = makeArray(data);
+        file.contents += '\n\n' + strTbl;
+        console.log(file.contents);
         alldone();
-      } 
+      });
+    };
 
-
-    }
-
-
-
+    filenames.forEach(function(filename){
+      var file = files[filename];
+      if (file.table) {
+        console.log(file.table);
+        ala(file);
+      } else {
+        alldone();      
+      }
+    });
   };
 };

@@ -5,7 +5,7 @@ var Metalsmith = require('metalsmith'),
 
 Metalsmith(__dirname)
     .destination('./build')
-    .use(exl.excelTables({folder: 'xlsx'}))
+    .use(exl.excelTables())
     .build(function(err) {
       if (err) { throw err; }
     });
