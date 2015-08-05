@@ -1,11 +1,11 @@
-var Metalsmith = require('metalsmith');
-var table = require('markdown-table');
-var alasql = require('alasql');
-var exl = require("./module.js")
+var Metalsmith = require('metalsmith'),
+	table = require('markdown-table'),
+	alasql = require('alasql'),
+	exl = require("./module.js");
 
 Metalsmith(__dirname)
     .destination('./build')
-    .use(exl.excelTables())
+    .use(exl.excelTables({folder: 'xlsx'}))
     .build(function(err) {
       if (err) { throw err; }
     });
