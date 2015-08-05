@@ -1,8 +1,10 @@
-var table = require('markdown-table');
-var path = require('path');
-var alasql = require('alasql');
+var table = require('markdown-table'),
+  url = require('url'),
+  alasql = require('alasql'),
+  _ = require('lodash');
+
+
 var exports = module.exports = {};
-var _ = require('lodash');
 
 var makeArray = function(objArray) {
   var tableArr = [];
@@ -14,16 +16,19 @@ var makeArray = function(objArray) {
   return(table(tableArr));
 };
 
-function makeQry(tbl, select, additional){
-  qry = 'SELECT ' + select + ' from xlsx("' + tbl + '",{headers:true})';
-  if (typeof additional === "string") {
+function makeQry(root, tbl, select, additional){
+  if (typeof select === "undefined") {
+    select = "*";
+  }
+  qry = 'SELECT ' + select + ' from xlsx("' + url.resolve(root, tbl) + '",{headers:true})';
+  if (additional) {
     qry += ' ' + additional;
   }
   return qry;
 }
 
 exports.excelTables = function(config) {
-  config = _.defaults(config||{},{folder:"xlsx/"});
+  config = _.defaults(config||{},{folder:"xlsx"});
 
   return function(files, metalsmith, done) {
     var filenames = Object.keys(files);
@@ -38,11 +43,12 @@ exports.excelTables = function(config) {
     })();
 
     var ala = function(file){
-      var qry = makeQry(file.table, file.select, file.additional);
+
+      var qry = makeQry(config.folder, file.table, file.select, file.additional);
       alasql(qry,[],function(data){
         var strTbl = makeArray(data);
         file.contents += '\n\n' + strTbl;
-        console.log(file.contents);
+        //console.log(file.contents);
         alldone();
       });
     };
@@ -50,7 +56,7 @@ exports.excelTables = function(config) {
     filenames.forEach(function(filename){
       var file = files[filename];
       if (file.table) {
-        console.log(file.table);
+        //console.log(file.table);
         ala(file);
       } else {
         alldone();      
