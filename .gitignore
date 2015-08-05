@@ -21,7 +21,7 @@ $RECYCLE.BIN/
 # Operating System Files
 # =========================
 node_modules/
-build/
+
 # OSX
 # =========================
 
@@ -42,3 +42,5 @@ build/
 Network Trash Folder
 Temporary Items
 .apdisk
+
+build/
